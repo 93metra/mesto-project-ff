@@ -1,10 +1,12 @@
+import '../pages/index.css';
+import { initialCards } from './cards.js'
 // @todo: DOM узлы
 const content = document.querySelector('.content');
 const placesList = content.querySelector('.places__list');
 
 // @todo: Темплейт карточки
 // @todo: Функция создания карточки
-function createCard(cardsArr, deleteCard) {
+function createCard(cardsArr, callBack) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -17,7 +19,7 @@ function createCard(cardsArr, deleteCard) {
   cardImage.alt = `На изображении ` + cardsArr.name;
 
   deleteButton.addEventListener('click', function() {
-    deleteCard(deleteButton);
+    callBack(deleteButton);
   })
 
   return cardElement;
