@@ -22,7 +22,15 @@ initialCards.forEach((el) => {
 
 // Обработчики
 profileSection.addEventListener('click', (evt) => {
-  openModal(evt);
+  let popup;
+
+  if (evt.target.classList.contains('profile__edit-button')) {
+    popup = document.querySelector('.popup_type_edit');
+  } else if (evt.target.classList.contains('profile__add-button')) {
+    popup = document.querySelector('.popup_type_new-card');
+  };
+
+  openModal(popup);
   resetModalInput();
 });
 
@@ -46,9 +54,7 @@ function openImagePopup(evt) {
   document.querySelector('.popup__caption').textContent = evt.target.alt;
 
   const popup = document.querySelector('.popup_type_image');
-  popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', closeOnEsc);
-  document.addEventListener('mousedown', closePopupByClick);
+  openModal(popup);
 };
 
 function editProfile(evt) {
@@ -69,7 +75,7 @@ function addNewPlace(evt) {
     link: newLink.value
   };
   
-  placesList.insertBefore(createCard(card, deleteCard, openModal, cardLike), placesList.firstChild);
+  placesList.insertBefore(createCard(card, deleteCard, openImagePopup, cardLike), placesList.firstChild);
 };
 
 function resetModalInput() {
