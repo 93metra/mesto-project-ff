@@ -1,7 +1,8 @@
 import '../pages/index.css';
 import { initialCards } from './cards.js'
 import { createCard, cardLike, deleteCard } from './card.js'
-import { openModal, closeModal, closePopupByClick, closeOnEsc } from './modal.js'
+import { openModal, closeModal } from './modal.js'
+import { enableValidation, clearValidation, validationConfig } from './validation.js'
 
 // DOM узлы
 const content = document.querySelector('.content');
@@ -32,6 +33,7 @@ profileSection.addEventListener('click', (evt) => {
 
   openModal(popup);
   resetModalInput();
+  clearValidation(validationConfig);
 });
 
 newPlaceForm.addEventListener('submit', (evt) => {
@@ -90,3 +92,6 @@ function resetModalInput() {
     };
   };
 };
+
+// Validation
+enableValidation(validationConfig);
