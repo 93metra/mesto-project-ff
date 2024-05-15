@@ -14,11 +14,12 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image"></div>
+      <div class="avatar__edit-icon popup_is-animated"></div>
+      <img class="profile__image" src=""></img>
       <div class="profile__info">
-        <h1 class="profile__title">Жак-Ив Кусто</h1>
+        <h1 class="profile__title">...</h1>
         <button class="profile__edit-button" type="button"></button>
-        <p class="profile__description">Исследователь океана</p>
+        <p class="profile__description">...</p>
       </div>
       <button class="profile__add-button" type="button"></button>
     </section>
@@ -107,17 +108,35 @@
       <p class="popup__caption"></p>
     </div>
   </div>
+  <div class="popup popup_type_edit_avatar popup_is-animated">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="newAvatar">
+        <fieldset class="form__set">
+          <label class="label">
+            <input type="url" name="link" class="popup__input popup__input_type_url" id="link-input" placeholder="Ссылка на новый аватар" required>
+            <span class="form__input-error link-input-error"></span>
+          </label>
+          <button type="submit" class="button popup__button">Сохранить</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
 </div>
 
 
 <template id="card-template">
-  <li class="places__item card">
+  <li class="places__item card" id="">
     <img class="card__image" src="" alt="" />
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like-wrapper">
+        <button type="button" class="card__like-button"></button>
+        <span class="card__like-counter"></span>
+      </div>
     </div>
   </li>
 </template>

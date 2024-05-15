@@ -22,15 +22,15 @@ export const enableValidation = (config) => {
   });
 };
 
-export const clearValidation = (validationConfig) => {
-  const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
+export const clearValidation = (config) => {
+  const formList = Array.from(document.querySelectorAll(config.formSelector));
   formList.forEach((formElement) => {
-    const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+    const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
     inputList.forEach((inputElement) => {
-      hideInputError(formElement, inputElement, validationConfig);
+      hideInputError(formElement, inputElement, config);
     });
-    const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
-    toggleButtonState(inputList, buttonElement, validationConfig);
+    const buttonElement = formElement.querySelector(config.submitButtonSelector);
+    toggleButtonState(inputList, buttonElement, config);
   });
 };
 
@@ -53,13 +53,13 @@ const checkInputValidity = (formElement, inputElement, config) => {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
     inputElement.setCustomValidity("");
-  }
+  };
 
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage, config);
   } else {
     hideInputError(formElement, inputElement, config);
-  }
+  };
 };
 
 const setEventListeners = (formElement, config) => {
@@ -78,13 +78,13 @@ function hasInvalidInput(inputList) {
   return inputList.some((inputElement) => {
     return !inputElement.validity.valid;
   });
-}
+};
 
 function toggleButtonState(inputList, buttonElement, config) {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(config.inactiveButtonClass);
   } else {
     buttonElement.classList.remove(config.inactiveButtonClass);
-  }
-}
+  };
+};
 

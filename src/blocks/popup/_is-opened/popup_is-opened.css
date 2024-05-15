@@ -5,3 +5,13 @@
   pointer-events: all;
   transition: visibility 0s, opacity 0.6s;
 }
+
+/* Для 'avatar__edit-icon', находится в
+/profile/__edit-icon/avatar__edit-icon  */
+.avatar__icon-visible {
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+  transition: visibility 0s, opacity 0.6s;
+}

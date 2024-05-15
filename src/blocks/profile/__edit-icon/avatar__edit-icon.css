@@ -1,0 +1,17 @@
+.avatar__edit-icon {
+  position: absolute;
+  z-index: 2;
+  display: none;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, .5);
+  background-image: url('../../../images/edit-icon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 26px 26px;
+  cursor: pointer;
+}
+
+/* Класс 'avatar__icon-visible' для отображения, находится в
+popup/_is-opened/popup_is-opened, по другому не работало */
