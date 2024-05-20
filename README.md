@@ -1,1 +1,1 @@
-https://github.com/93metra/mesto-project-ff.git
+https://93metra.github.io/mesto-project-ff
