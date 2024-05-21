@@ -1,14 +1,15 @@
 import '../pages/index.css';
-import { createCard, deleteCard, likeCard, addNewCard } from './card.js'
+import { createCard, deleteCard, likeCard } from './card.js'
 import { openModal, closeModal } from './modal.js'
-import { validationConfig, enableValidation, clearValidation } from './validation.js'
-import { getUserInfoApi, getInitialCardsApi, uploadNewUserInfoApi, uploadNewAvatarApi } from './api.js'
+import { enableValidation, clearValidation } from './validation.js'
+import { getUserInfoApi, getInitialCardsApi, uploadNewUserInfoApi, uploadNewAvatarApi, uploadNewCardApi } from './api.js'
 
 // DOM узлы
 const content = document.querySelector('.content');
 const placesList = content.querySelector('.places__list');
 
-const profileSection = document.querySelector('.profile');
+const profileEditButton = document.querySelector('.profile__edit-button');
+const newPlaceButton = document.querySelector('.profile__add-button')
 const newPlaceForm = document.forms.newPlace;
 const editProfileForm = document.forms.editProfile;
 const editAvatarForm = document.forms.newAvatar;
@@ -18,6 +19,16 @@ const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const profileImage = document.querySelector('.profile__image');
 const avatarEditIcon = document.querySelector('.avatar__edit-icon')
+
+// Объявления
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'button_inactive',
+  inputErrorClass: 'form__input_type_error',
+  errorClass: 'form__input-error_active'
+};
 
 // Функции
 function openImagePopup(evt) {
@@ -32,18 +43,23 @@ function openImagePopup(evt) {
   openModal(popup);
 };
 
-function resetModalInput() {
-  const targetPopup = document.querySelector('.popup_is-opened');
-  if (targetPopup) {
-    if (targetPopup.classList.contains('popup_type_new-card')) {
-      newPlaceForm.reset();
-    } else if (targetPopup.classList.contains('popup_type_edit')) {
-      nameInput.value = profileTitle.textContent;
-      jobInput.value = profileDescription.textContent;
-    } else if (targetPopup.classList.contains('popup_type_edit_avatar')) {
-      editAvatarForm.reset();
-    };
-  };
+function addNewCard(evt) {
+  const newCardName = newPlaceForm.elements.placeName;
+  const newCardLink = newPlaceForm.elements.link;
+  renderLoader(evt, true);
+
+  uploadNewCardApi(newCardName, newCardLink)
+    .then(card => {
+      placesList.insertBefore(createCard(card, deleteCard, openImagePopup, likeCard, card.owner._id), placesList.firstChild);
+      const openedPopup = document.querySelector('.popup_is-opened');
+      closeModal(openedPopup);
+    })
+    .catch(error => {
+      console.error(error);
+    })
+    .finally(() => {
+      renderLoader(evt, false)
+    })
 };
 
 function updateUserInfo(evt) {
@@ -55,11 +71,13 @@ function updateUserInfo(evt) {
       profileDescription.textContent = updated.about;
       const openedPopup = document.querySelector('.popup_is-opened');
       closeModal(openedPopup);
-      renderLoader(evt, false);
     })
     .catch(error => {
       console.error(error);
-    });
+    })
+    .finally(() => {
+      renderLoader(evt, false)
+    })
 };
 
 function editAvatar(evt) {
@@ -71,11 +89,13 @@ function editAvatar(evt) {
       profileImage.src = result.avatar;
       const openedPopup = document.querySelector('.popup_is-opened');
       closeModal(openedPopup);
-      renderLoader(evt, false);
     })
     .catch(error => {
       console.error(error);
-    });
+    })
+    .finally(() => {
+      renderLoader(evt, false)
+    })
 };
 
 function renderLoader(evt, param) {
@@ -88,22 +108,7 @@ function renderLoader(evt, param) {
 };
 
 // Обработчики
-profileSection.addEventListener('click', (evt) => {
-  let popup;
-
-  if (evt.target.classList.contains('profile__edit-button')) {
-    popup = document.querySelector('.popup_type_edit');
-  } else if (evt.target.classList.contains('profile__add-button')) {
-    popup = document.querySelector('.popup_type_new-card');
-  } else if (evt.target.classList.contains('avatar__edit-icon')) {
-    popup = document.querySelector('.popup_type_edit_avatar');
-  };
-
-  openModal(popup);
-  resetModalInput();
-  clearValidation(validationConfig);
-});
-
+// Edit avatar
 profileImage.addEventListener('mouseover', () => {
   avatarEditIcon.classList.add('avatar__icon-visible');
 });
@@ -112,16 +117,40 @@ avatarEditIcon.addEventListener('mouseout', () => {
   avatarEditIcon.classList.remove('avatar__icon-visible');
 });
 
-newPlaceForm.addEventListener('submit', (evt) => {
-  addNewCard(evt, newPlaceForm, renderLoader, closeModal, placesList, openImagePopup);
+avatarEditIcon.addEventListener('click', () => {
+  const popup = document.querySelector('.popup_type_edit_avatar');
+  editAvatarForm.reset();
+  clearValidation(validationConfig);
+  openModal(popup);
+});
+
+editAvatarForm.addEventListener('submit', (evt) => {
+  editAvatar(evt);
+});
+
+// Edit profile
+profileEditButton.addEventListener('click', () => {
+  const popup = document.querySelector('.popup_type_edit');
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+  clearValidation(validationConfig);
+  openModal(popup);
 });
 
 editProfileForm.addEventListener('submit', (evt) => {
   updateUserInfo(evt);
 });
 
-editAvatarForm.addEventListener('submit', (evt) => {
-  editAvatar(evt);
+// Add new place
+newPlaceButton.addEventListener('click', () => {
+  const popup = document.querySelector('.popup_type_new-card');
+  newPlaceForm.reset();
+  clearValidation(validationConfig);
+  openModal(popup);
+});
+
+newPlaceForm.addEventListener('submit', (evt) => {
+  addNewCard(evt);
 });
 
 // Вызовы
@@ -134,7 +163,7 @@ Promise.all([getUserInfoApi(), getInitialCardsApi()])
     profileImage.src = userInfo.avatar;
 
     initialCards.forEach((card) => {
-      placesList.append(createCard(card, deleteCard, openImagePopup, likeCard, userInfo));
+      placesList.append(createCard(card, deleteCard, openImagePopup, likeCard, userInfo._id));
     });
   })
   .catch(error => {

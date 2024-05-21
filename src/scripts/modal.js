@@ -1,9 +1,9 @@
 export function openModal(popup) {
-  if (popup) {
+  // if (popup) {
     popup.classList.add('popup_is-opened');
     document.addEventListener('keydown', closeOnEsc);
     document.addEventListener('mousedown', closePopupByClick);
-  };
+  // };
 };
 
 function closeOnEsc(evt) {
